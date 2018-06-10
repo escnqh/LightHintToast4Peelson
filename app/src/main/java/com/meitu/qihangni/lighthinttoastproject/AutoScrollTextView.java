@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 
 /**
@@ -17,6 +18,8 @@ import android.util.AttributeSet;
  */
 public class AutoScrollTextView extends AppCompatTextView implements Runnable {
 
+    private final String TAG = this.getClass().getName();
+
     private OnScrollStopListener onScrollStopListener;
 
     private int mCurrentPosition;
@@ -27,28 +30,74 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
     private int mScrollSpeed = 1;
     private int mHadScrolled = 0;
     private boolean mIsFresh = false;
-    private boolean mIsListen = false;
+    private double mRightSpeed = 0;
+    private Paint mPaint;
+    private float mTextSize;
+    private String mText;
+    private float mTextViewWidth;
+    private float mTextViewHeight;
+    private Context mContext;
 
 
     public AutoScrollTextView(Context context) {
         super(context);
+        mContext = context;
+        initPaint();
     }
 
     public AutoScrollTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
+        initPaint();
     }
 
     public AutoScrollTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mContext = context;
+        initPaint();
+    }
+
+    private void initPaint() {
+        mPaint = new Paint();
+        mPaint.set(this.getPaint());
+        Log.i(TAG, "mPaint inited!");
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         if (!mIsMeasure) {
             getTextWidth();
             mIsMeasure = true;
         }
+        mPaint.setTextSize(sp2px(mContext, mTextSize));
+        int x = (int) (mTextViewWidth / 2 - mPaint.measureText(this.getText().toString()) / 2);
+        int y = (int) ((mTextViewHeight / 2) - ((mPaint.descent() + mPaint.ascent()) / 2));
+        canvas.drawText(this.getText().toString(), x, y, mPaint);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        Log.i(TAG, "widthMeasureSpec:" + widthMeasureSpec);
+        Log.i(TAG, "heightMeasureSpec:" + heightMeasureSpec);
+
+        mTextViewWidth = MeasureSpec.getSize(widthMeasureSpec);
+        mTextViewHeight = MeasureSpec.getSize(heightMeasureSpec);
+        this.setMeasuredDimension((int) mTextViewWidth, (int) mTextViewHeight);
+    }
+
+    @Override
+    public void setTextSize(float size) {
+        mTextSize = size;
+        super.setTextSize(size);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        stopScroll(null);
+        Log.i(TAG, "AutoScrollTextView is onDetachedFromWindow");
+        super.onDetachedFromWindow();
     }
 
     @Override
@@ -58,13 +107,17 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
 
     @Override
     public void setText(CharSequence text, BufferType type) {
+        mText = text.toString();
         super.setText(text, type);
-        startScroll();//触发时机
     }
 
     @Override
     public void run() {
-        mCurrentPosition -= mScrollSpeed;
+        if (mRightSpeed < mScrollSpeed) {
+            mRightSpeed = mRightSpeed + 0.04;//通过速度增长的形式让用户有反应时间
+            Log.i(TAG, "right speed is :" + mRightSpeed);
+        }
+        mCurrentPosition -= mRightSpeed;
         scrollTo(mCurrentPosition, 0);
         if (mIsStop) {
             return;
@@ -73,11 +126,11 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
             stopScroll(null);
             return;
         }
-        if (mScrollSpeed >= 0 && getScrollX() <= -(this.getWidth())) {
+        if (mScrollSpeed >= 0 && getScrollX() <= -(mTextWidth)) {
             scrollTo(mTextWidth, 0);
             mCurrentPosition = mTextWidth;
             mHadScrolled++;
-        } else if (mScrollSpeed < 0 && getScrollX() >= this.getWidth()) {
+        } else if (mScrollSpeed < 0 && getScrollX() >= mTextWidth) {
             scrollTo(-mTextWidth, 0);
             mCurrentPosition = -mTextWidth;
             mHadScrolled++;
@@ -89,9 +142,7 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
      * 获取文字宽度
      */
     private void getTextWidth() {
-        Paint paint = this.getPaint();
-        String string = this.getText().toString();
-        mTextWidth = (int) paint.measureText(string);
+        mTextWidth = sp2px(mContext,mPaint.measureText(mText));
     }
 
     /**
@@ -109,17 +160,20 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
      * @param param 携带可能需要返回的信息
      */
     public void stopScroll(@Nullable String param) {
-        if (mIsFresh) scrollTo(0, 0);
+        if (mIsFresh) {
+            scrollTo(0, 0);
+        }
         mIsStop = true;
-        if (mIsListen)
+        if (null != onScrollStopListener) {
             onScrollStopListener.onScrollStop(param);
+        }
         this.removeCallbacks(this);
     }
 
     /**
      * 从头开始滚动（重新开始在这里）
      */
-    public void startFromHead() {
+    public void reStartScroll() {
         mCurrentPosition = 0;
         mHadScrolled = 0;
         startScroll();
@@ -158,10 +212,14 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
 
     public void setOnScrollStopListener(OnScrollStopListener onScrollStopListener) {
         if (onScrollStopListener != null) {
-            mIsListen = true;
             this.onScrollStopListener = onScrollStopListener;
         }
 
+    }
+
+    private static int sp2px(Context context, float spValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
     }
 
 
