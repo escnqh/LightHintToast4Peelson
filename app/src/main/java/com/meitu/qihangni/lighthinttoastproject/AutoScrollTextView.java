@@ -115,7 +115,6 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
     public void run() {
         if (mRightSpeed < mScrollSpeed) {
             mRightSpeed = mRightSpeed + 0.04;//通过速度增长的形式让用户有反应时间
-            Log.i(TAG, "right speed is :" + mRightSpeed);
         }
         mCurrentPosition -= mRightSpeed;
         scrollTo(mCurrentPosition, 0);
@@ -126,13 +125,13 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
             stopScroll(null);
             return;
         }
-        if (mScrollSpeed >= 0 && getScrollX() <= -(mTextWidth)) {
-            scrollTo(mTextWidth, 0);
-            mCurrentPosition = mTextWidth;
+        if (mScrollSpeed >= 0 && getScrollX() <= -((int)mPaint.measureText(mText))) {
+            scrollTo((int) mPaint.measureText(mText), 0);
+            mCurrentPosition = (int) mPaint.measureText(mText);
             mHadScrolled++;
-        } else if (mScrollSpeed < 0 && getScrollX() >= mTextWidth) {
-            scrollTo(-mTextWidth, 0);
-            mCurrentPosition = -mTextWidth;
+        } else if (mScrollSpeed < 0 && getScrollX() >= (int)mPaint.measureText(mText)) {
+            scrollTo(-(int) mPaint.measureText(mText), 0);
+            mCurrentPosition = -(int) mPaint.measureText(mText);
             mHadScrolled++;
         }
         postDelayed(this, 20);
@@ -142,7 +141,8 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
      * 获取文字宽度
      */
     private void getTextWidth() {
-        mTextWidth = sp2px(mContext,mPaint.measureText(mText));
+        mTextWidth = sp2px(mContext, mPaint.measureText(mText));
+//        mTextWidth =(int)mPaint.measureText(mText);
     }
 
     /**
@@ -154,8 +154,13 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
         post(this);
     }
 
+    public void stopScroll(){
+        mIsStop = true;
+        this.removeCallbacks(this);
+    }
+
     /**
-     * 停止滚动
+     * 结束滚动
      *
      * @param param 携带可能需要返回的信息
      */

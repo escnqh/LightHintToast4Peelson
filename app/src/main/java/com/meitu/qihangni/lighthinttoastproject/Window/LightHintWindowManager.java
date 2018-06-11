@@ -54,7 +54,7 @@ public class LightHintWindowManager {
      */
     protected boolean removeView(View view) {
         try {
-            mWindowManager.removeView(view);
+            mWindowManager.removeViewImmediate(view);
             Log.i(TAG, "removeView ...");
             return true;
         } catch (Exception e) {
@@ -92,6 +92,11 @@ public class LightHintWindowManager {
         return displayMetrics.widthPixels;
     }
 
+    /**
+     * 拿状态栏的高度
+     *
+     * @return
+     */
     protected int getStatusBarHeight() {
         int result = 0;
         int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");

@@ -55,7 +55,7 @@ public class LightHintToast {
 //        mAutoScrollTextView.setOnScrollStopListener(new AutoScrollTextView.OnScrollStopListener() {
 //            @Override
 //            public void onScrollStop(@Nullable String param) {
-//                hide();
+//                close();
 //            }
 //        });
         Log.i(TAG, "start...");
@@ -105,7 +105,7 @@ public class LightHintToast {
             mToast.cancel();
         }
         mCanceled = true;
-        Log.i(TAG, "hide...");
+        Log.i(TAG, "close...");
     }
 
 

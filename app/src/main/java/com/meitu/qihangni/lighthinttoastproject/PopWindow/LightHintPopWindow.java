@@ -53,7 +53,7 @@ public class LightHintPopWindow extends PopupWindow {
 //        mAutoScrollTextView.setOnScrollStopListener(new AutoScrollTextView.OnScrollStopListener() {
 //            @Override
 //            public void onScrollStop(@Nullable String param) {
-//                hide();
+//                close();
 //            }
 //        });
         Log.i(TAG, "start...");

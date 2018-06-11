@@ -4,16 +4,15 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center">
-
     <LinearLayout
         android:background="#9e9e9e"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:orientation="horizontal">
         <com.meitu.qihangni.lighthinttoastproject.AutoScrollTextView
             android:id="@+id/toast_msg"
             android:singleLine="true"
+            android:text="123"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginTop="5dp"
