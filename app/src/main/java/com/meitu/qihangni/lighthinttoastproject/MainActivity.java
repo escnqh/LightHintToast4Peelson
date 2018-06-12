@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
                 if (mCount == 0) {
                     Intent intent = new Intent(MainActivity.this, LightHintService.class);
                     intent.putExtra(LightHintService.ACTION, LightHintService.SHOW);
-                    intent.putExtra(LightHintService.MSG,"这是一个超级长的消息1234567890哈哈哈啦啦啦啦啦啦啦123");
-                    intent.putExtra(LightHintService.DURATION,3);
-                    intent.putExtra(LightHintService.TEXTSIZE,20);
+                    intent.putExtra(LightHintService.MSG, "这是一个超级长的消息1234567890哈哈哈啦啦啦啦啦啦啦123");
+                    intent.putExtra(LightHintService.DURATION, 3);
+                    intent.putExtra(LightHintService.TEXTSIZE, 20);
                     startService(intent);
                     mCount++;
                 } else {

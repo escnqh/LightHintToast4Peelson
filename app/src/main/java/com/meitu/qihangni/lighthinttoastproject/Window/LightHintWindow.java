@@ -1,7 +1,5 @@
 package com.meitu.qihangni.lighthinttoastproject.Window;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -43,30 +41,7 @@ public class LightHintWindow extends FrameLayout {
         super(context);
         mContext = context;
 
-        //检查悬浮窗权限
-        if (!GetPermissionUtil.checkFloatWindowPermission(mContext)) {
-            if (Build.VERSION.SDK_INT >= 23) {//对6.0以上的做统一处理
-                try {
-                    Class clazz = Settings.class;
-                    Method canDrawOverlays = clazz.getDeclaredMethod("canDrawOverlays", Context.class);
-                    boolean result = (Boolean) canDrawOverlays.invoke(null, context);
-                    if (!result) {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                        intent.setData(Uri.parse("package:" + context.getPackageName()));
-                        context.startActivity(intent);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, Log.getStackTraceString(e));
-                }
-            } else {
-                if (GetPermissionUtil.checkIsHuaweiRom()) {
-                    GetPermissionUtil.applyHuaweiPermission(mContext);
-                } else if (GetPermissionUtil.checkIsMiuiRom()) {
-                    GetPermissionUtil.applyMiuiPermission(mContext);
-                }
-            }
-            Toast.makeText(mContext, "请授予悬浮窗权限！", Toast.LENGTH_SHORT).show();
-        }
+        checkPermission();
 
         mMsg = msg;
         mDuration = duration;
@@ -84,6 +59,39 @@ public class LightHintWindow extends FrameLayout {
         }
     }
 
+    /**
+     * 检查悬浮窗权限
+     */
+    private void checkPermission() {
+        if (!GetPermissionUtil.checkFloatWindowPermission(mContext)) {
+            if (Build.VERSION.SDK_INT >= 23) {//对6.0以上的做统一处理
+                try {
+                    Class clazz = Settings.class;
+                    Method canDrawOverlays = clazz.getDeclaredMethod("canDrawOverlays", Context.class);
+                    boolean result = (Boolean) canDrawOverlays.invoke(null, mContext);
+                    if (!result) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        intent.setData(Uri.parse("package:" + mContext.getPackageName()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, Log.getStackTraceString(e));
+                }
+            } else {
+                if (GetPermissionUtil.checkIsHuaweiRom()) {
+                    GetPermissionUtil.applyHuaweiPermission(mContext);
+                } else if (GetPermissionUtil.checkIsMiuiRom()) {
+                    GetPermissionUtil.applyMiuiPermission(mContext);
+                }
+            }
+            Toast.makeText(mContext, "请授予悬浮窗权限！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 显示
+     */
     public void show() {
         mParams = new WindowManager.LayoutParams();
         mParams.gravity = Gravity.TOP;
@@ -119,6 +127,9 @@ public class LightHintWindow extends FrameLayout {
         }
     }
 
+    /**
+     * 关闭
+     */
     public void close() {
         mLightHintWindowManager.removeView(mView);
     }

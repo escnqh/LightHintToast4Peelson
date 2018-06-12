@@ -125,11 +125,11 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
             stopScroll(null);
             return;
         }
-        if (mScrollSpeed >= 0 && getScrollX() <= -((int)mPaint.measureText(mText))) {
+        if (mScrollSpeed >= 0 && getScrollX() <= -((int) mPaint.measureText(mText))) {
             scrollTo((int) mPaint.measureText(mText), 0);
             mCurrentPosition = (int) mPaint.measureText(mText);
             mHadScrolled++;
-        } else if (mScrollSpeed < 0 && getScrollX() >= (int)mPaint.measureText(mText)) {
+        } else if (mScrollSpeed < 0 && getScrollX() >= (int) mPaint.measureText(mText)) {
             scrollTo(-(int) mPaint.measureText(mText), 0);
             mCurrentPosition = -(int) mPaint.measureText(mText);
             mHadScrolled++;
@@ -154,7 +154,7 @@ public class AutoScrollTextView extends AppCompatTextView implements Runnable {
         post(this);
     }
 
-    public void stopScroll(){
+    public void stopScroll() {
         mIsStop = true;
         this.removeCallbacks(this);
     }
