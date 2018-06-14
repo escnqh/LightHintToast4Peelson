@@ -1,4 +1,4 @@
-package com.meitu.qihangni.lighthinttoastproject.Window;
+package com.meitu.qihangni.lighthinttoastproject.old;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.meitu.qihangni.lighthinttoastproject.AutoScrollTextView;
-import com.meitu.qihangni.lighthinttoastproject.GetPermissionUtil;
 import com.meitu.qihangni.lighthinttoastproject.R;
 
 import java.lang.reflect.Method;
@@ -52,9 +51,9 @@ public class LightHintWindow extends FrameLayout {
             mAutoScrollTextView = mView.findViewById(R.id.toast_msg);
             mAutoScrollTextView.setTextSize(textSize);
             mAutoScrollTextView.setText(mMsg);
-            int windowWidth = mLightHintWindowManager.getScreenWidth();
-            int textWidth = sp2px(mContext, textSize) * msg.length();
-            isScroll = windowWidth <= textWidth;
+//            int windowWidth = mLightHintWindowManager.getScreenWidth();
+//            int textWidth = sp2px(mContext, textSize) * msg.length();
+//            isScroll = windowWidth <= textWidth;
             Log.i(TAG, "init nice...");
         }
     }
@@ -97,24 +96,26 @@ public class LightHintWindow extends FrameLayout {
         mParams.gravity = Gravity.TOP;
         mParams.x = 0;
         mParams.y = mLightHintWindowManager.getStatusBarHeight();
-        mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        mParams.type = WindowManager.LayoutParams.TYPE_TOAST;
         mParams.format = PixelFormat.RGBA_8888;
-        mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR |
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+        mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         mParams.width = LayoutParams.MATCH_PARENT;
         mParams.height = LayoutParams.WRAP_CONTENT;
         if (isScroll) {
-            Log.i(TAG, "is Scroll...");
-            mLightHintWindowManager.addView(mView, mParams);
-            mAutoScrollTextView.setScrollSpeed(3);
-            mAutoScrollTextView.setScrollTime(2);
-            mAutoScrollTextView.setOnScrollStopListener(new AutoScrollTextView.OnScrollStopListener() {
-                @Override
-                public void onScrollStop(@Nullable String param) {
-                    close();
-                }
-            });
+//            Log.i(TAG, "is Scroll...");
+//            mLightHintWindowManager.addView(mView, mParams);
+//            mAutoScrollTextView.setScrollSpeed(3);
+//            mAutoScrollTextView.setScrollTime(2);
+//            mAutoScrollTextView.setOnScrollStopListener(new AutoScrollTextView.OnScrollStopListener() {
+//                @Override
+//                public void onScrollStop(@Nullable String param) {
+//                    close();
+//                }
+//            });
             mAutoScrollTextView.startScroll();
         } else {
             mLightHintWindowManager.addView(mView, mParams);

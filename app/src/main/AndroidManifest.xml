@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SecondActivity"/>
-        <service android:name=".Window.LightHintService"/>
+        <service android:name=".old.LightHintService"/>
     </application>
 
 </manifest>

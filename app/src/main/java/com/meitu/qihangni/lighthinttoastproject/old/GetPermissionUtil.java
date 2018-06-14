@@ -1,4 +1,4 @@
-package com.meitu.qihangni.lighthinttoastproject;
+package com.meitu.qihangni.lighthinttoastproject.old;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
