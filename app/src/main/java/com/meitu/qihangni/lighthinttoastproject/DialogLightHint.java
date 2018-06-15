@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.Toast;
 
 /**
+ * Dialog类型的轻提示
+ *
  * @author nqh 2018/6/13
  */
 public class DialogLightHint implements WhatLightHint {

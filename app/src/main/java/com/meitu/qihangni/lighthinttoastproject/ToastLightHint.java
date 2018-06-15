@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 /**
- * Toast类型的
+ * Toast类型的轻提示
+ *
  * @author nqh 2018/6/13
  */
 class ToastLightHint implements WhatLightHint {
